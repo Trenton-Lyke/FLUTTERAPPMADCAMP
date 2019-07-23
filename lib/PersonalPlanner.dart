@@ -11,21 +11,22 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
-class CreateClassPage extends StatefulWidget {
+class PersonalPlannerPage extends StatefulWidget {
   @override
 final FirebaseUser user;
 
-  const CreateClassPage({@required this.user});
+  const PersonalPlannerPage({@required this.user});
 
 
 
-  _CreateClassPageState createState() => _CreateClassPageState();
+  _PersonalPlannerPageState createState() => _PersonalPlannerPageState();
 }
 
-class _CreateClassPageState extends State<CreateClassPage> {
+class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
   @override
 
-  var _class;
+  var task;
+  var dateTime;
   var currentUser;
   var userEmail = '';
   GlobalKey<FormState> _formKeyClassCreation;
@@ -44,23 +45,24 @@ class _CreateClassPageState extends State<CreateClassPage> {
 
   Widget build(BuildContext context) {
 
-    final classField = TextFormField(
+    final taskField = TextFormField(
       obscureText: false,
       validator: (value) {
 
 
         if (value == null || value.trim() == '') {
-          return 'Please enter a name for your class.';
+          return 'Please enter a task.';
         }
-        _class = value;
+        task = value;
         return null;
       },
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
-        labelText: 'Class Name',
+        labelText: 'Task',
       ),
     );
+    Date
     final registerClassButon = DialogButton(
         color: Colors.blue[800],
         child: Text(
@@ -71,9 +73,9 @@ class _CreateClassPageState extends State<CreateClassPage> {
           if (_formKeyClassCreation.currentState.validate()) {
             _formKeyClassCreation.currentState.save();
 
-            print("$_class");
+            print("$task");
             try {
-              Firestore.instance.collection('Classes').add({'class_name':_class, 'email':widget.user.email}).then((val){
+              Firestore.instance.collection('Classes').add({'class_name':task, 'email':widget.user.email}).then((val){
                 Alert(
                   context: context,
                   type: AlertType.success,
@@ -242,7 +244,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                     _formKeyClassCreation = null;
                   });
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => CreateClassPage(user: currentUser)));
+                      MaterialPageRoute(builder: (context) => PersonalPlannerPage(user: currentUser)));
                 }
                 else{
                   Alert(
@@ -357,7 +359,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                       ),
 
                       SizedBox(height: 25.0),
-                      classField,
+                      taskField,
                       SizedBox(
                         height: 35.0,
                       ),

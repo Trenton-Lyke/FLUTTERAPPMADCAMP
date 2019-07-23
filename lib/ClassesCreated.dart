@@ -225,68 +225,6 @@ class _DashBoardPageState extends State<DashBoardPage> {
               children: <Widget>[
                 StreamBuilder(
                   stream: Firestore.instance
-                      .collection("Enrollments")
-                      .where("email", isEqualTo: widget.user.email)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.data.documents == 0) {
-                      return Text("Loading...");
-                    } else {
-                      var cardList = List<Widget>();
-                      cardList.add(Text("ENROLLMENTS"),);
-                      for (int i = 0; i < snapshot.data.documents.length; i++) {
-                        cardList.add(Card(
-                          child:
-                          Column(
-                              children: <Widget>[
-
-                                Text("${snapshot.data.documents[i]["class_name"]}"),
-                                InkWell(
-                                  child: Text("Questions for Teacher Stream", style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),),
-                                  onTap: (){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context) => ClassStudentQuestionsPage(classDoc : snapshot.data.documents[i])));
-                                  },
-
-                                ),
-                                InkWell(
-                                  child: Text("Questions for Student Stream", style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),),
-                                  onTap: (){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context) => ClassTeacherQuestionsPage(classDoc : snapshot.data.documents[i])));
-                                  },
-
-                                ),
-                                InkWell(
-                                  child: Text("Answers for Teacher Stream", style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),),
-                                  onTap: (){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context) => ClassStudentAnswersPage(classDoc : snapshot.data.documents[i])));
-                                  },
-
-                                ),
-                                InkWell(
-                                  child: Text("Question Builder for Teacher", style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),),
-                                  onTap: (){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context) => QuestionBuilderPage(classDoc : snapshot.data.documents[i])));
-                                  },
-
-                                ),
-
-                              ]),
-                        )
-                        );
-                      }
-                      print(cardList);
-                      return Column(
-                        children: cardList,
-                      );
-                    }
-                  },
-                ),
-                StreamBuilder(
-                  stream: Firestore.instance
                       .collection("Classes")
                       .where("email", isEqualTo: widget.user.email)
                       .snapshots(),

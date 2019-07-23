@@ -285,35 +285,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     }
                   },
                 ),
-                StreamBuilder(
-                  stream: Firestore.instance
-                      .collection("Classes")
-                      .where("email", isEqualTo: widget.user.email)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.data.documents == 0) {
-                      return Text("Loading...");
-                    } else {
-                      var cardList = List<Widget>();
-                      cardList.add(Text("CLASSES CREATED"),);
-                      for (int i = 0; i < snapshot.data.documents.length; i++) {
-                        cardList.add(Card(
-                          child:
-                          Column(
-                              children: <Widget>[
-                                Text("CLASS NAME: ${snapshot.data.documents[i]["class_name"]}"),
-                                Text("CLASS KEY: ${snapshot.data.documents[i].documentID}")
-                              ]),
-                        )
-                        );
-                      }
-                      print(cardList);
-                      return Column(
-                        children: cardList,
-                      );
-                    }
-                  },
-                ),
+                
               ],
             ),
           ),

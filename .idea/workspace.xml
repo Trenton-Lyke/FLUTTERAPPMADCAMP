@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0030e322-0c9d-4542-8e25-8bf35ccd4e7f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Home.dart" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.dart_tool/" />
@@ -68,8 +67,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/Home.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="178">
-              <caret line="213" column="29" selection-start-line="213" selection-start-column="29" selection-end-line="213" selection-end-column="29" />
+            <state relative-caret-position="238">
+              <caret line="192" column="67" lean-forward="true" selection-start-line="192" selection-start-column="67" selection-end-line="192" selection-end-column="67" />
               <folding>
                 <element signature="e#0#50#0" expanded="true" />
               </folding>
@@ -109,7 +108,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/PersonalPlanner.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6545">
+            <state relative-caret-position="254">
               <caret line="399" column="62" selection-start-line="399" selection-start-column="62" selection-end-line="399" selection-end-column="62" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
@@ -214,9 +213,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="566" />
-    <option name="y" value="16" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="117" />
+    <option name="y" value="13" />
     <option name="width" value="1382" />
     <option name="height" value="744" />
   </component>
@@ -232,6 +231,30 @@
             <path>
               <item name="myapp" type="b2602c69:ProjectViewProjectNode" />
               <item name="myapp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="myapp" type="b2602c69:ProjectViewProjectNode" />
+              <item name="myapp" type="462c0819:PsiDirectoryNode" />
+              <item name="ios" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="myapp" type="b2602c69:ProjectViewProjectNode" />
+              <item name="myapp" type="462c0819:PsiDirectoryNode" />
+              <item name="ios" type="462c0819:PsiDirectoryNode" />
+              <item name="Runner" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="myapp" type="b2602c69:ProjectViewProjectNode" />
+              <item name="myapp" type="462c0819:PsiDirectoryNode" />
+              <item name="ios" type="462c0819:PsiDirectoryNode" />
+              <item name="Runner.xcodeproj" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="myapp" type="b2602c69:ProjectViewProjectNode" />
+              <item name="myapp" type="462c0819:PsiDirectoryNode" />
+              <item name="ios" type="462c0819:PsiDirectoryNode" />
+              <item name="Runner.xcodeproj" type="462c0819:PsiDirectoryNode" />
+              <item name="project.xcworkspace" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="myapp" type="b2602c69:ProjectViewProjectNode" />
@@ -255,15 +278,15 @@
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\trent\AndroidStudioProjects\myapp\lib" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\trent\AndroidStudioProjects\myapp\ios" />
       <recent name="C:\Users\trent\AndroidStudioProjects\myapp\lib" />
       <recent name="C:\Users\trent\AndroidStudioProjects\myapp\images" />
       <recent name="C:\Users\trent\AndroidStudioProjects\myapp\ios\Runner" />
       <recent name="C:\Users\trent\AndroidStudioProjects\myapp\android\app" />
-      <recent name="C:\Users\trent\AndroidStudioProjects\myapp\android\app\src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\trent\AndroidStudioProjects\myapp\lib" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -301,10 +324,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="117" y="13" width="1382" height="744" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.45310137" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.45310137" />
       <window_info id="Captures" order="1" side_tool="true" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Image Layers" order="3" />
@@ -314,7 +337,7 @@
       <window_info id="Capture Tool" order="7" />
       <window_info id="Favorites" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Dart Analysis" order="0" weight="0.32993197" />
-      <window_info active="true" anchor="bottom" id="Run" order="1" visible="true" weight="0.31632653" />
+      <window_info anchor="bottom" id="Run" order="1" visible="true" weight="0.31632653" />
       <window_info anchor="bottom" id="TODO" order="2" weight="0.32993197" />
       <window_info anchor="bottom" id="Android Profiler" order="3" show_stripe_button="false" />
       <window_info anchor="bottom" id="Logcat" order="4" weight="0.32993197" />
@@ -537,9 +560,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/CreateAccount.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4420">
@@ -556,16 +576,6 @@
           <caret line="150" column="57" selection-start-line="150" selection-start-column="57" selection-end-line="150" selection-end-column="63" />
           <folding>
             <element signature="e#0#50#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/PersonalPlanner.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6545">
-          <caret line="399" column="62" selection-start-line="399" selection-start-column="62" selection-end-line="399" selection-end-column="62" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -587,10 +597,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/PersonalPlanner.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="399" column="62" selection-start-line="399" selection-start-column="62" selection-end-line="399" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/Home.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="213" column="29" selection-start-line="213" selection-start-column="29" selection-end-line="213" selection-end-column="29" />
+        <state relative-caret-position="238">
+          <caret line="192" column="67" lean-forward="true" selection-start-line="192" selection-start-column="67" selection-end-line="192" selection-end-column="67" />
           <folding>
             <element signature="e#0#50#0" expanded="true" />
           </folding>

@@ -6,6 +6,8 @@ import 'package:myapp/CreateAccount.dart';
 import 'package:myapp/CreateClass.dart';
 import 'package:myapp/DashBoard.dart';
 import 'package:myapp/Home.dart';
+import 'package:myapp/PersonalPlanner.dart';
+import 'package:myapp/UniversalPlanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -182,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                     _formKeyLogin = null;
                   });
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => DashBoardPage(user: currentUser)));
+                      MaterialPageRoute(builder: (context) => PersonalPlannerPage(user: currentUser)));
                 }
                 else{
                   Alert(

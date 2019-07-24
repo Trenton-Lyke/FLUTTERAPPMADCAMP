@@ -58,6 +58,13 @@
             </list>
           </value>
         </entry>
+        <entry key="date_utils">
+          <value>
+            <list>
+              <option value="C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/date_utils-0.1.0+2/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="firebase_auth">
           <value>
             <list>
@@ -76,6 +83,13 @@
           <value>
             <list>
               <option value="C:/src/flutter/flutter/packages/flutter/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_clean_calendar">
+          <value>
+            <list>
+              <option value="C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_clean_calendar-1.0.1/lib" />
             </list>
           </value>
         </entry>
@@ -216,8 +230,10 @@
       <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-0.12.7/lib" />
       <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/collection-1.14.11/lib" />
       <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-0.1.2/lib" />
+      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/date_utils-0.1.0+2/lib" />
       <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-0.11.1+11/lib" />
       <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.4.0+6/lib" />
+      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_clean_calendar-1.0.1/lib" />
       <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.15.8/lib" />
       <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/logging-0.11.3+2/lib" />
       <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.5/lib" />

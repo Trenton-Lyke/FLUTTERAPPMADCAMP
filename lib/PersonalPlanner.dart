@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
+import 'package:myapp/Calendar.dart';
 import 'package:myapp/ClassRegister.dart';
 import 'package:myapp/CreateAccount.dart';
 import 'package:myapp/DashBoard.dart';
+import 'package:myapp/DateTimePicker.dart';
 import 'package:myapp/Home.dart';
 import 'package:myapp/Login.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -11,23 +14,29 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
-class CreateClassPage extends StatefulWidget {
+class PersonalPlannerPage extends StatefulWidget {
   @override
 final FirebaseUser user;
 
-  const CreateClassPage({@required this.user});
+  const PersonalPlannerPage({@required this.user});
 
 
 
-  _CreateClassPageState createState() => _CreateClassPageState();
+
+
+  _PersonalPlannerPageState createState() => _PersonalPlannerPageState();
 }
 
-class _CreateClassPageState extends State<CreateClassPage> {
+class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
   @override
 
-  var _class;
+  var task;
+  var date = new DateTime.now();
+  var time = new TimeOfDay.now();
+  DateTime _dateTime;
   var currentUser;
   var userEmail = '';
+  Map _events;
   GlobalKey<FormState> _formKeyClassCreation;
   void initState() {
     _formKeyClassCreation = GlobalKey<FormState>();
@@ -40,11 +49,16 @@ class _CreateClassPageState extends State<CreateClassPage> {
         }
       });
     });
+
+    _events = {
+      DateTime(2019, 3, 1): [{'name': 'Event A', 'isDone': true}],
+
+  };
   }
 
   Widget build(BuildContext context) {
 
-    final classField = TextFormField(
+    final taskField = TextFormField(
       obscureText: false,
       validator: (value) {
 
@@ -52,7 +66,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
         if (value == null || value.trim() == '') {
           return 'Please enter a name for your class.';
         }
-        _class = value;
+        task = value;
         return null;
       },
       decoration: InputDecoration(
@@ -61,6 +75,25 @@ class _CreateClassPageState extends State<CreateClassPage> {
         labelText: 'Class Name',
       ),
     );
+
+
+    final dateTimeField = DateTimePicker(selectedDate: new DateTime.now(),
+      selectedTime: new TimeOfDay.now(), selectDate: (val){
+        print(val);
+        setState((){
+          date = val;
+        });
+
+      }, selectTime: (val){
+        print(val);
+        setState((){
+          time = val;
+        });
+
+      },);
+
+
+
     final registerClassButon = DialogButton(
         color: Colors.blue[800],
         child: Text(
@@ -70,10 +103,11 @@ class _CreateClassPageState extends State<CreateClassPage> {
         onPressed: () async {
           if (_formKeyClassCreation.currentState.validate()) {
             _formKeyClassCreation.currentState.save();
+            _dateTime = new DateTime(date.year, date.month, date.day, date.hour, date.minute);
 
-            print("$_class");
+            print("$task");
             try {
-              Firestore.instance.collection('Classes').add({'class_name':_class, 'email':widget.user.email}).then((val){
+              Firestore.instance.collection('PersonalPlanner').add({'task':task, 'email':widget.user.email, 'dateTime': _dateTime}).then((val){
                 Alert(
                   context: context,
                   type: AlertType.success,
@@ -242,7 +276,7 @@ class _CreateClassPageState extends State<CreateClassPage> {
                     _formKeyClassCreation = null;
                   });
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => CreateClassPage(user: currentUser)));
+                      MaterialPageRoute(builder: (context) => PersonalPlannerPage(user: currentUser)));
                 }
                 else{
                   Alert(
@@ -331,65 +365,126 @@ class _CreateClassPageState extends State<CreateClassPage> {
             fit: BoxFit.fill,
           ),
         ),
-        child: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(35.0, 0, 35, 0),
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKeyClassCreation,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        child: CircleAvatar(
-                          radius: 85,
-                          backgroundColor: Colors.blue[800],
-                          child: CircleAvatar(
-                            radius: 80,
-                            backgroundColor: Colors.white,
-                            child: Container(
-                                height: 85,
-                                child: Image.asset("images/logo.png")),
-                          ),
-                        ),
-                      ),
+        child: SingleChildScrollView(
+          child: SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(35.0, 0, 35, 0),
+                child:
+                Container(
+                  height: 500,
+                  child: StreamBuilder(
+                    stream: Firestore.instance
+                        .collection("PersonalPlanner")
+                        .where("email", isEqualTo: widget.user.email).orderBy('dateTime')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if(!snapshot.hasData || snapshot.data.documents.length == 0) {
+                        print(snapshot.data.documents);
+                        return CalendarScreen(events: {}, withAdder: false, user: widget.user);
 
-                      SizedBox(height: 25.0),
-                      classField,
-                      SizedBox(
-                        height: 35.0,
-                      ),
-                      registerClassButon,
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      InkWell(
-                        child: Text(
-                          "Create an Account",
-                          style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _formKeyClassCreation = null;
-                          });
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CreateAccountPage()));
-                        },
-                      )
-                    ],
+                      }
+                      else{
+                        print(snapshot.data.documents.length);
+                        Map<DateTime, List<Map>> events = new Map<DateTime, List<Map>>();
+                        for(int i = 0; i < snapshot.data.documents.length; i++){
+                          var event_dateTime = new DateTime.fromMillisecondsSinceEpoch(snapshot.data.documents[i]['dateTime'].seconds*1000);
+                          var event_time = formatTime(event_dateTime.hour, event_dateTime.minute);
+                          event_dateTime = DateTime(event_dateTime.year, event_dateTime.month, event_dateTime.day);
+                          if(events.containsKey(event_dateTime)){
+                            events[event_dateTime].add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
+                          }
+                          else{
+                            List<Map> tempList = new List<Map>();
+                            tempList.add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
+                            events[event_dateTime] = tempList;
+
+                          }
+
+                        }
+
+
+                        return CalendarScreen(events: events, withAdder: false, user: widget.user,);
+                      }
+                    }
                   ),
                 ),
+
+
               ),
             ),
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: (){Alert(context: context, title: "hi", content: Form(
+        key: _formKeyClassCreation,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+
+
+
+
+            SizedBox(height: 25.0),
+            taskField,
+            SizedBox(height: 25.0),
+            dateTimeField,
+            SizedBox(
+              height: 35.0,
+            ),
+            registerClassButon,
+            SizedBox(
+              height: 15.0,
+            ),
+            InkWell(
+              child: Text(
+                "Create an Account",
+                style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline),
+              ),
+              onTap: () {
+                setState(() {
+                  _formKeyClassCreation = null;
+                });
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CreateAccountPage()));
+              },
+            )
+          ],
+        ),
+      ), ).show();}),
     );
+
+  }
+
+
+}
+
+String formatTime(hour, minute){
+  String ending;
+  String formattedMinutes;
+
+  if("$minute".length == 1){
+    formattedMinutes = '$minute'+'0';
+  }
+  else{
+    formattedMinutes = '$minute';
+  }
+
+  if(hour%12 == hour){
+    ending = "am";
+  }
+  else{
+    ending = "pm";
+  }
+  if(hour == 12 || hour == 0) {
+    return "12:$formattedMinutes $ending";
+  }
+  else{
+    return "${hour % 12}:$formattedMinutes $ending";
   }
 }

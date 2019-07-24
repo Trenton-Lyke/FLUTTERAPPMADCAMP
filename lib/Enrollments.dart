@@ -229,7 +229,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                       .where("email", isEqualTo: widget.user.email)
                       .snapshots(),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.data.documents == 0) {
+                    if (!snapshot.hasData || snapshot.data.documents.length == 0) {
                       return Text("Loading...");
                     } else {
                       var cardList = List<Widget>();

@@ -211,11 +211,11 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
                 Text(
-                  "WELCOME",
+                  "WELCOME TO",
                   style: TextStyle(fontSize: 40, color: Colors.white),
                 ),
                 Text(
-                  "TO SCHOOLBOARD",
+                  "SCHOOLBOARD",
                   style: TextStyle(fontSize: 40, color: Colors.white),
                 ),
                 Text(

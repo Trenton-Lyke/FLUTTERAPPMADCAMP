@@ -4,11 +4,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
 import 'package:myapp/Calendar.dart';
 import 'package:myapp/ClassRegister.dart';
+import 'package:myapp/ClassesCreated.dart';
 import 'package:myapp/CreateAccount.dart';
+import 'package:myapp/CreateClass.dart';
 import 'package:myapp/DashBoard.dart';
 import 'package:myapp/DateTimePicker.dart';
+import 'package:myapp/Enrollments.dart';
 import 'package:myapp/Home.dart';
 import 'package:myapp/Login.dart';
+import 'package:myapp/UniversalPlanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,9 +41,9 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
   var currentUser;
   var userEmail = '';
   Map _events;
-  GlobalKey<FormState> _formKeyClassCreation;
+  GlobalKey<FormState> _formKeyPersonalPlanner;
   void initState() {
-    _formKeyClassCreation = GlobalKey<FormState>();
+    _formKeyPersonalPlanner = GlobalKey<FormState>();
     final Future<FirebaseUser> futureUser =
         FirebaseAuth.instance.currentUser().then((user) {
       setState(() {
@@ -50,10 +54,7 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
       });
     });
 
-    _events = {
-      DateTime(2019, 3, 1): [{'name': 'Event A', 'isDone': true}],
 
-  };
   }
 
   Widget build(BuildContext context) {
@@ -64,7 +65,7 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
 
 
         if (value == null || value.trim() == '') {
-          return 'Please enter a name for your class.';
+          return 'Please enter a task.';
         }
         task = value;
         return null;
@@ -72,7 +73,7 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
-        labelText: 'Class Name',
+        labelText: 'Task',
       ),
     );
 
@@ -94,25 +95,28 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
 
 
 
-    final registerClassButon = DialogButton(
+    final addEventButton = DialogButton(
         color: Colors.blue[800],
         child: Text(
-          "CREATE A CLASS",
+          "ADD TASK",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
         onPressed: () async {
-          if (_formKeyClassCreation.currentState.validate()) {
-            _formKeyClassCreation.currentState.save();
+          if (_formKeyPersonalPlanner.currentState.validate()) {
+            _formKeyPersonalPlanner.currentState.save();
             _dateTime = new DateTime(date.year, date.month, date.day, date.hour, date.minute);
 
             print("$task");
             try {
+
               Firestore.instance.collection('PersonalPlanner').add({'task':task, 'email':widget.user.email, 'dateTime': _dateTime}).then((val){
+                Navigator.pop(context);
                 Alert(
+
                   context: context,
                   type: AlertType.success,
-                  title: "Class Created",
-                  desc: "You have successfully created a class. With the class key ${val.documentID}. Please save this for student registration.",
+                  title: "Task added",
+                  desc: "You have added a task to your personal planner.",
                   buttons: [
                     DialogButton(
                       child: Text(
@@ -135,8 +139,8 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
                   Alert(
                     context: context,
                     type: AlertType.error,
-                    title: "Invalid Login",
-                    desc: "Your email or password was incorrect.",
+                    title: "There was a problem",
+                    desc: "There was a problem updating your personal planner",
                     buttons: [
                       DialogButton(
                         child: Text(
@@ -195,7 +199,7 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
               trailing: Icon(Icons.home),
               onTap: () {
                 setState(() {
-                  _formKeyClassCreation = null;
+                  _formKeyPersonalPlanner = null;
                 });
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => HomePage()));
@@ -208,7 +212,7 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
 
                 if(currentUser != null){
                   setState(() {
-                    _formKeyClassCreation = null;
+                    _formKeyPersonalPlanner = null;
                   });
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => DashBoardPage(user: currentUser)));
@@ -241,7 +245,7 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
 
                 if(currentUser != null){
                   setState(() {
-                    _formKeyClassCreation = null;
+                    _formKeyPersonalPlanner = null;
                   });
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => ClassRegistrationPage(user: currentUser)));
@@ -273,10 +277,10 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
               onTap: () {
                 if(currentUser != null){
                   setState(() {
-                    _formKeyClassCreation = null;
+                    _formKeyPersonalPlanner = null;
                   });
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => PersonalPlannerPage(user: currentUser)));
+                      MaterialPageRoute(builder: (context) => CreateClassPage(user: currentUser)));
                 }
                 else{
                   Alert(
@@ -299,11 +303,135 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
                 },
             ),
             ListTile(
+              title: Text("Personal Planner"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyPersonalPlanner = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => PersonalPlannerPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged into to access your personal planner.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Universal Planner"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyPersonalPlanner = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => UniversalPlannerPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged into to access the universal planner.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Classes Owned"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyPersonalPlanner = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => ClassesCreatedPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged in to access the classes you own.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Enrollments"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyPersonalPlanner = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => EnrollmentsPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged in to access the classes your enrollments enrolled.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
               title: Text("Login"),
               trailing: Icon(Icons.person),
               onTap: () {
                 setState(() {
-                  _formKeyClassCreation = null;
+                  _formKeyPersonalPlanner = null;
                 });
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
@@ -314,7 +442,7 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
               trailing: Icon(Icons.person_add),
               onTap: () {
                 setState(() {
-                  _formKeyClassCreation = null;
+                  _formKeyPersonalPlanner = null;
                 });
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => CreateAccountPage()));
@@ -341,7 +469,7 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
               trailing: Icon(Icons.close),
               onTap: () {
                 setState(() {
-                  _formKeyClassCreation = null;
+                  _formKeyPersonalPlanner = null;
                 });
                 Navigator.pop(context);
               },
@@ -365,59 +493,59 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
             fit: BoxFit.fill,
           ),
         ),
-        child: SingleChildScrollView(
-          child: SafeArea(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(35.0, 0, 35, 0),
-                child:
-                Container(
-                  height: 500,
-                  child: StreamBuilder(
-                    stream: Firestore.instance
-                        .collection("PersonalPlanner")
-                        .where("email", isEqualTo: widget.user.email).orderBy('dateTime')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if(!snapshot.hasData || snapshot.data.documents.length == 0) {
-                        print(snapshot.data.documents);
-                        return CalendarScreen(events: {}, withAdder: false, user: widget.user);
+        child: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(35.0, 0, 35, 0),
+              child:
+              Container(
+                height: 400,
+                color: Colors.white,
 
-                      }
-                      else{
-                        print(snapshot.data.documents.length);
-                        Map<DateTime, List<Map>> events = new Map<DateTime, List<Map>>();
-                        for(int i = 0; i < snapshot.data.documents.length; i++){
-                          var event_dateTime = new DateTime.fromMillisecondsSinceEpoch(snapshot.data.documents[i]['dateTime'].seconds*1000);
-                          var event_time = formatTime(event_dateTime.hour, event_dateTime.minute);
-                          event_dateTime = DateTime(event_dateTime.year, event_dateTime.month, event_dateTime.day);
-                          if(events.containsKey(event_dateTime)){
-                            events[event_dateTime].add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
-                          }
-                          else{
-                            List<Map> tempList = new List<Map>();
-                            tempList.add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
-                            events[event_dateTime] = tempList;
+                child: StreamBuilder(
+                  stream: Firestore.instance
+                      .collection("PersonalPlanner")
+                      .where("email", isEqualTo: widget.user.email).orderBy('dateTime')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if(!snapshot.hasData || snapshot.data.documents.length == 0) {
+                      print(snapshot.data.documents);
+                      return CalendarScreen(events: {}, withAdder: false, user: widget.user);
 
-                          }
+                    }
+                    else{
+                      print(snapshot.data.documents.length);
+                      Map<DateTime, List<Map>> events = new Map<DateTime, List<Map>>();
+                      for(int i = 0; i < snapshot.data.documents.length; i++){
+                        var event_dateTime = new DateTime.fromMillisecondsSinceEpoch(snapshot.data.documents[i]['dateTime'].seconds*1000);
+                        var event_time = formatTime(event_dateTime.hour, event_dateTime.minute);
+                        event_dateTime = DateTime(event_dateTime.year, event_dateTime.month, event_dateTime.day);
+                        if(events.containsKey(event_dateTime)){
+                          events[event_dateTime].add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
+                        }
+                        else{
+                          List<Map> tempList = new List<Map>();
+                          tempList.add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
+                          events[event_dateTime] = tempList;
 
                         }
 
-
-                        return CalendarScreen(events: events, withAdder: false, user: widget.user,);
                       }
+
+
+                      return CalendarScreen(events: events, withAdder: false, user: widget.user,);
                     }
-                  ),
+                  }
                 ),
-
-
               ),
+
+
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){Alert(context: context, title: "hi", content: Form(
-        key: _formKeyClassCreation,
+      floatingActionButton: FloatingActionButton(child: Icon(Icons.add), onPressed: (){Alert(context: context, title: "Add Task", content: Form(
+        key: _formKeyPersonalPlanner,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -433,27 +561,11 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
             SizedBox(
               height: 35.0,
             ),
-            registerClassButon,
+            addEventButton,
             SizedBox(
               height: 15.0,
             ),
-            InkWell(
-              child: Text(
-                "Create an Account",
-                style: TextStyle(
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline),
-              ),
-              onTap: () {
-                setState(() {
-                  _formKeyClassCreation = null;
-                });
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CreateAccountPage()));
-              },
-            )
+
           ],
         ),
       ), ).show();}),

@@ -4,11 +4,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
 import 'package:myapp/Calendar.dart';
 import 'package:myapp/ClassRegister.dart';
+import 'package:myapp/ClassesCreated.dart';
 import 'package:myapp/CreateAccount.dart';
+import 'package:myapp/CreateClass.dart';
 import 'package:myapp/DashBoard.dart';
 import 'package:myapp/DateTimePicker.dart';
+import 'package:myapp/Enrollments.dart';
 import 'package:myapp/Home.dart';
 import 'package:myapp/Login.dart';
+import 'package:myapp/PersonalPlanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,9 +43,9 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
   var currentUser;
   var userEmail = '';
   Map _events;
-  GlobalKey<FormState> _formKeyClassCreation;
+  GlobalKey<FormState> _formKeyUniversalPlanner;
   void initState() {
-    _formKeyClassCreation = GlobalKey<FormState>();
+    _formKeyUniversalPlanner = GlobalKey<FormState>();
     final Future<FirebaseUser> futureUser =
         FirebaseAuth.instance.currentUser().then((user) {
       setState(() {
@@ -52,10 +56,7 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
       });
     });
 
-    _events = {
-      DateTime(2019, 3, 1): [{'name': 'Event A', 'isDone': true}],
 
-  };
   }
 
   Widget build(BuildContext context) {
@@ -96,15 +97,15 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
 
 
 
-    final registerClassButon = DialogButton(
+    final addEventButon = DialogButton(
         color: Colors.blue[800],
         child: Text(
-          "CREATE A CLASS",
+          "ADD TASK",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
         onPressed: () async {
-          if (_formKeyClassCreation.currentState.validate()) {
-            _formKeyClassCreation.currentState.save();
+          if (_formKeyUniversalPlanner.currentState.validate()) {
+            _formKeyUniversalPlanner.currentState.save();
             _dateTime = new DateTime(date.year, date.month, date.day, date.hour, date.minute);
 
             print("$task");
@@ -113,8 +114,8 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
                 Alert(
                   context: context,
                   type: AlertType.success,
-                  title: "Class Created",
-                  desc: "You have successfully created a class. With the class key ${val.documentID}. Please save this for student registration.",
+                  title: "Task added",
+                  desc: "You have updating the universal planner.",
                   buttons: [
                     DialogButton(
                       child: Text(
@@ -137,8 +138,8 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
                   Alert(
                     context: context,
                     type: AlertType.error,
-                    title: "Invalid Login",
-                    desc: "Your email or password was incorrect.",
+                    title: "There was a problem",
+                    desc: "There was a problem adding your task to the universal planner. Please try again later.",
                     buttons: [
                       DialogButton(
                         child: Text(
@@ -197,7 +198,7 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
               trailing: Icon(Icons.home),
               onTap: () {
                 setState(() {
-                  _formKeyClassCreation = null;
+                  _formKeyUniversalPlanner = null;
                 });
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => HomePage()));
@@ -210,7 +211,7 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
 
                 if(currentUser != null){
                   setState(() {
-                    _formKeyClassCreation = null;
+                    _formKeyUniversalPlanner = null;
                   });
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => DashBoardPage(user: currentUser)));
@@ -243,7 +244,7 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
 
                 if(currentUser != null){
                   setState(() {
-                    _formKeyClassCreation = null;
+                    _formKeyUniversalPlanner = null;
                   });
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => ClassRegistrationPage(user: currentUser)));
@@ -275,10 +276,10 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
               onTap: () {
                 if(currentUser != null){
                   setState(() {
-                    _formKeyClassCreation = null;
+                    _formKeyUniversalPlanner = null;
                   });
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => UniversalPlannerPage(user: currentUser)));
+                      MaterialPageRoute(builder: (context) => CreateClassPage(user: currentUser)));
                 }
                 else{
                   Alert(
@@ -301,11 +302,135 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
                 },
             ),
             ListTile(
+              title: Text("Personal Planner"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyUniversalPlanner= null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => PersonalPlannerPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged into to access your personal planner.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Universal Planner"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyUniversalPlanner = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => UniversalPlannerPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged into to access the universal planner.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Classes Owned"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyUniversalPlanner = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => ClassesCreatedPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged in to access the classes you own.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Enrollments"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyUniversalPlanner = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => EnrollmentsPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged in to access the classes your enrollments enrolled.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
               title: Text("Login"),
               trailing: Icon(Icons.person),
               onTap: () {
                 setState(() {
-                  _formKeyClassCreation = null;
+                  _formKeyUniversalPlanner = null;
                 });
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
@@ -316,7 +441,7 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
               trailing: Icon(Icons.person_add),
               onTap: () {
                 setState(() {
-                  _formKeyClassCreation = null;
+                  _formKeyUniversalPlanner = null;
                 });
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => CreateAccountPage()));
@@ -343,7 +468,7 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
               trailing: Icon(Icons.close),
               onTap: () {
                 setState(() {
-                  _formKeyClassCreation = null;
+                  _formKeyUniversalPlanner = null;
                 });
                 Navigator.pop(context);
               },
@@ -361,6 +486,7 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
         backgroundColor: Colors.blue[800],
       ),
       body: Container(
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("images/backpic.jpg"),
@@ -374,7 +500,8 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
                 padding: const EdgeInsets.fromLTRB(35.0, 0, 35, 0),
                 child:
                 Container(
-                  height: 500,
+                  height: 400,
+                  color: Colors.white,
                   child: StreamBuilder(
                     stream: Firestore.instance
                         .collection("UniversalPlanner")
@@ -418,8 +545,8 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){Alert(context: context, title: "hi", content: Form(
-        key: _formKeyClassCreation,
+      floatingActionButton: FloatingActionButton(child: Icon(Icons.add), onPressed: (){Alert(context: context, title: "Add Task", content: Form(
+        key: _formKeyUniversalPlanner,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -433,29 +560,13 @@ class _UniversalPlannerPageState extends State<UniversalPlannerPage> {
             SizedBox(height: 25.0),
             dateTimeField,
             SizedBox(
-              height: 35.0,
+              height: 50.0,
             ),
-            registerClassButon,
+            addEventButon,
             SizedBox(
-              height: 15.0,
+              height: 50.0,
             ),
-            InkWell(
-              child: Text(
-                "Create an Account",
-                style: TextStyle(
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline),
-              ),
-              onTap: () {
-                setState(() {
-                  _formKeyClassCreation = null;
-                });
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CreateAccountPage()));
-              },
-            )
+
           ],
         ),
       ), ).show();}),

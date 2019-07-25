@@ -245,7 +245,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   child: Text("Questions for Teacher Stream", style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),),
                                   onTap: (){
                                     Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context) => ClassStudentQuestionsPage(classDoc : snapshot.data.documents[i])));
+                                        builder: (context) => ClassStudentQuestionsPage(class_id : snapshot.data.documents[i]['class_id'])));
                                   },
 
                                 ),
@@ -253,7 +253,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   child: Text("Questions for Student Stream", style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),),
                                   onTap: (){
                                     Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context) => ClassTeacherQuestionsPage(classDoc : snapshot.data.documents[i])));
+                                        builder: (context) => ClassTeacherQuestionsPage(class_id : snapshot.data.documents[i]['class_id'])));
                                   },
 
                                 ),

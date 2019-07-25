@@ -4,11 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:myapp/Animations.dart';
 import 'package:myapp/ClassRegister.dart';
+import 'package:myapp/ClassesCreated.dart';
 import 'package:myapp/CreateAccount.dart';
 import 'package:myapp/CreateClass.dart';
 import 'package:myapp/DashBoard.dart';
+import 'package:myapp/Enrollments.dart';
 import 'package:myapp/Home.dart';
 import 'package:myapp/Login.dart';
+import 'package:myapp/PersonalPlanner.dart';
+import 'package:myapp/UniversalPlanner.dart';
 import 'package:myapp/functions.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -163,6 +167,122 @@ class _ClassStudentAnswersPageState extends State<ClassStudentAnswersPage> {
                 }},
             ),
             ListTile(
+              title: Text("Personal Planner"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => PersonalPlannerPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged into to access your personal planner.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Universal Planner"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => UniversalPlannerPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged into to access the universal planner.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Classes Owned"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => ClassesCreatedPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged in to access the classes you own.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Enrollments"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => EnrollmentsPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged in to access the classes your enrollments enrolled.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
               title: Text("Login"),
               trailing: Icon(Icons.person),
               onTap: () {
@@ -213,7 +333,7 @@ class _ClassStudentAnswersPageState extends State<ClassStudentAnswersPage> {
         actions: <Widget>[IconButton(
             icon: Icon(Icons.arrow_downward),
             onPressed: () {
-              print(widget.classDoc["class_id"]);
+              print(widget.classDoc.documentID);
 
 
             })],
@@ -223,18 +343,19 @@ class _ClassStudentAnswersPageState extends State<ClassStudentAnswersPage> {
           child: StreamBuilder(
             stream: Firestore.instance
                 .collection("StudentAnswers")
-                .where("class_id", isEqualTo: widget.classDoc["class_id"])
+                .where("class_id", isEqualTo: widget.classDoc.documentID)
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData || snapshot.data.documents.length == 0) {
-                print(widget.classDoc["class_id"]);
+                print(widget.classDoc.documentID);
                 return Text("Loading...");
               } else {
                 var cardList = List<Widget>();
                 print(snapshot.data.documents);
                 var question_list = new List();
-                var isUnique = true;
+
                 for (int i = 0; i < snapshot.data.documents.length; i++) {
+                  var isUnique = true;
                   for(int j = 0; j <question_list.length; j++){
 
                     if(snapshot.data.documents[i]['question_id']==question_list[j]['question_id']){

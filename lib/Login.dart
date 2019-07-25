@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:myapp/ClassRegister.dart';
+import 'package:myapp/ClassesCreated.dart';
 import 'package:myapp/CreateAccount.dart';
 import 'package:myapp/CreateClass.dart';
 import 'package:myapp/DashBoard.dart';
+import 'package:myapp/Enrollments.dart';
 import 'package:myapp/Home.dart';
 import 'package:myapp/PersonalPlanner.dart';
 import 'package:myapp/UniversalPlanner.dart';
@@ -269,6 +271,130 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ).show();
                 }  },
+            ),
+            ListTile(
+              title: Text("Personal Planner"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyLogin = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => PersonalPlannerPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged into to access your personal planner.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Universal Planner"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyLogin = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => UniversalPlannerPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged into to access the universal planner.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Classes Owned"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyLogin = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => ClassesCreatedPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged in to access the classes you own.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
+            ),
+            ListTile(
+              title: Text("Enrollments"),
+              trailing: Icon(Icons.create),
+              onTap: () {
+
+                if(currentUser != null){
+                  setState(() {
+                    _formKeyLogin = null;
+                  });
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => EnrollmentsPage(user: currentUser)));
+                }
+                else{
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Please Login First",
+                    desc: "You need to be logged in to access the classes your enrollments enrolled.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }           },
             ),
             ListTile(
               title: Text("Login"),

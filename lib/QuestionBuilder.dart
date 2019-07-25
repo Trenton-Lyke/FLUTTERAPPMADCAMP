@@ -3,11 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:myapp/ClassForStudent.dart';
 import 'package:myapp/ClassRegister.dart';
+import 'package:myapp/ClassesCreated.dart';
 import 'package:myapp/CreateAccount.dart';
 import 'package:myapp/CreateClass.dart';
 import 'package:myapp/DashBoard.dart';
+import 'package:myapp/Enrollments.dart';
 import 'package:myapp/Home.dart';
 import 'package:myapp/Login.dart';
+import 'package:myapp/PersonalPlanner.dart';
+import 'package:myapp/UniversalPlanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -214,7 +218,7 @@ class _QuestionBuilderPageState extends State<QuestionBuilderPage> {
                 'question':question,
                 'answers':answers,
                 'type': type,
-                'class_id': widget.classDoc['class_id']
+                'class_id': widget.classDoc.documentID
               }
               ).then((val){
                 setState(() {
@@ -227,7 +231,7 @@ class _QuestionBuilderPageState extends State<QuestionBuilderPage> {
                     .collection("ClassTeacherQuestions").add({
                   'question':question,
                   'type': type,
-                  'class_id': widget.classDoc['class_id']
+                  'class_id': widget.classDoc.documentID
                 }
                 ).then((val){
                   setState(() {
@@ -238,7 +242,7 @@ class _QuestionBuilderPageState extends State<QuestionBuilderPage> {
 
 
               Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => ClassTeacherQuestionsPage(classDoc: widget.classDoc)));
+                  builder: (context) => ClassTeacherQuestionsPage(class_id: widget.classDoc.documentID)));
 
 
 
@@ -250,8 +254,8 @@ class _QuestionBuilderPageState extends State<QuestionBuilderPage> {
                   Alert(
                     context: context,
                     type: AlertType.error,
-                    title: "Invalid QuestionBuilder",
-                    desc: "Your email or password was incorrect.",
+                    title: "There was a problem",
+                    desc: "There was a problem creating this question. Please try again later.",
                     buttons: [
                       DialogButton(
                         child: Text(
@@ -418,6 +422,130 @@ class _QuestionBuilderPageState extends State<QuestionBuilderPage> {
                   }},
               ),
               ListTile(
+                title: Text("Personal Planner"),
+                trailing: Icon(Icons.create),
+                onTap: () {
+
+                  if(currentUser != null){
+                    setState(() {
+                      _formKeyQuestionBuilder = null;
+                    });
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => PersonalPlannerPage(user: currentUser)));
+                  }
+                  else{
+                    Alert(
+                      context: context,
+                      type: AlertType.error,
+                      title: "Please Login First",
+                      desc: "You need to be logged into to access your personal planner.",
+                      buttons: [
+                        DialogButton(
+                          child: Text(
+                            "OK",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          width: 120,
+                        )
+                      ],
+                    ).show();
+                  }           },
+              ),
+              ListTile(
+                title: Text("Universal Planner"),
+                trailing: Icon(Icons.create),
+                onTap: () {
+
+                  if(currentUser != null){
+                    setState(() {
+                      _formKeyQuestionBuilder = null;
+                    });
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => UniversalPlannerPage(user: currentUser)));
+                  }
+                  else{
+                    Alert(
+                      context: context,
+                      type: AlertType.error,
+                      title: "Please Login First",
+                      desc: "You need to be logged into to access the universal planner.",
+                      buttons: [
+                        DialogButton(
+                          child: Text(
+                            "OK",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          width: 120,
+                        )
+                      ],
+                    ).show();
+                  }           },
+              ),
+              ListTile(
+                title: Text("Classes Owned"),
+                trailing: Icon(Icons.create),
+                onTap: () {
+
+                  if(currentUser != null){
+                    setState(() {
+                      _formKeyQuestionBuilder = null;
+                    });
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => ClassesCreatedPage(user: currentUser)));
+                  }
+                  else{
+                    Alert(
+                      context: context,
+                      type: AlertType.error,
+                      title: "Please Login First",
+                      desc: "You need to be logged in to access the classes you own.",
+                      buttons: [
+                        DialogButton(
+                          child: Text(
+                            "OK",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          width: 120,
+                        )
+                      ],
+                    ).show();
+                  }           },
+              ),
+              ListTile(
+                title: Text("Enrollments"),
+                trailing: Icon(Icons.create),
+                onTap: () {
+
+                  if(currentUser != null){
+                    setState(() {
+                      _formKeyQuestionBuilder = null;
+                    });
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => EnrollmentsPage(user: currentUser)));
+                  }
+                  else{
+                    Alert(
+                      context: context,
+                      type: AlertType.error,
+                      title: "Please Login First",
+                      desc: "You need to be logged in to access the classes your enrollments enrolled.",
+                      buttons: [
+                        DialogButton(
+                          child: Text(
+                            "OK",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          width: 120,
+                        )
+                      ],
+                    ).show();
+                  }           },
+              ),
+              ListTile(
                 title: Text("Login"),
                 trailing: Icon(Icons.person),
                 onTap: () {
@@ -476,7 +604,7 @@ class _QuestionBuilderPageState extends State<QuestionBuilderPage> {
         ),
 
         body: Container(
-
+          height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage("images/backpic.jpg"),
@@ -491,44 +619,46 @@ class _QuestionBuilderPageState extends State<QuestionBuilderPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(35.0,0,35,0),
                 child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKeyQuestionBuilder,
-                    child:
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
+                  child: Card(
+                    child: Form(
+                      key: _formKeyQuestionBuilder,
+                      child:
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
 
-                          child: CircleAvatar(
-                            radius: 85,
-                            backgroundColor: Colors.blue[800],
                             child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.white,
-                              child: Container(
-                                  height: 85,
-                                  child: Image.asset("images/logo.png")),
+                              radius: 85,
+                              backgroundColor: Colors.blue[800],
+                              child: CircleAvatar(
+                                radius: 80,
+                                backgroundColor: Colors.white,
+                                child: Container(
+                                    height: 85,
+                                    child: Image.asset("images/logo.png")),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 45.0),
-                        questionField,
-                        SizedBox(height: 25.0),
-                        typeField,
-                        SizedBox(
-                          height: 25.0,
-                        ),
-                        answersFields,
-                        SizedBox(
-                          height: 35.0,
-                        ),
-                        createQuestionButton,
-                        SizedBox(
-                          height: 15.0,
-                        ),
+                          SizedBox(height: 45.0),
+                          questionField,
+                          SizedBox(height: 25.0),
+                          typeField,
+                          SizedBox(
+                            height: 25.0,
+                          ),
+                          answersFields,
+                          SizedBox(
+                            height: 35.0,
+                          ),
+                          createQuestionButton,
+                          SizedBox(
+                            height: 15.0,
+                          ),
 
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

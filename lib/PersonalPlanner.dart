@@ -78,8 +78,8 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
     );
 
 
-    final dateTimeField = DateTimePicker(selectedDate: new DateTime.now(),
-      selectedTime: new TimeOfDay.now(), selectDate: (val){
+    final dateTimeField = DateTimePicker(selectedDate: date,
+      selectedTime: time, selectDate: (val){
         print(val);
         setState((){
           date = val;

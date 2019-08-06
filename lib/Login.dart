@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => DashBoardPage(user: user)));
+                      builder: (context) => HomePage()));
             } catch (e) {
               try {
                 final result = await InternetAddress.lookup('google.com');

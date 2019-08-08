@@ -34,19 +34,18 @@ final FirebaseUser user;
 class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
   @override
 
-  var task;
-  var date = new DateTime.now();
-  var time = new TimeOfDay.now();
-  DateTime _dateTime;
+
   var currentUser;
   var userEmail = '';
   Map _events;
   GlobalKey<FormState> _formKeyPersonalPlanner;
   void initState() {
     _formKeyPersonalPlanner = GlobalKey<FormState>();
+
     final Future<FirebaseUser> futureUser =
         FirebaseAuth.instance.currentUser().then((user) {
       setState(() {
+
         currentUser = user;
         if(user != null) {
           userEmail = user.email;
@@ -59,121 +58,9 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
 
   Widget build(BuildContext context) {
 
-    final taskField = TextFormField(
-      obscureText: false,
-      validator: (value) {
-
-
-        if (value == null || value.trim() == '') {
-          return 'Please enter a task.';
-        }
-        task = value;
-        return null;
-      },
-      decoration: InputDecoration(
-        fillColor: Colors.white,
-        filled: true,
-        labelText: 'Task',
-      ),
-    );
-
-
-    final dateTimeField = DateTimePicker(selectedDate: date,
-      selectedTime: time, selectDate: (val){
-        print(val);
-        setState((){
-          date = val;
-        });
-
-      }, selectTime: (val){
-        print(val);
-        setState((){
-          time = val;
-        });
-
-      },);
 
 
 
-    final addEventButton = DialogButton(
-        color: Colors.blue[800],
-        child: Text(
-          "ADD TASK",
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-        onPressed: () async {
-          if (_formKeyPersonalPlanner.currentState.validate()) {
-            _formKeyPersonalPlanner.currentState.save();
-            _dateTime = new DateTime(date.year, date.month, date.day, date.hour, date.minute);
-
-            print("$task");
-            try {
-
-              Firestore.instance.collection('PersonalPlanner').add({'task':task, 'email':widget.user.email, 'dateTime': _dateTime}).then((val){
-                Navigator.pop(context);
-                Alert(
-
-                  context: context,
-                  type: AlertType.success,
-                  title: "Task added",
-                  desc: "You have added a task to your personal planner.",
-                  buttons: [
-                    DialogButton(
-                      child: Text(
-                        "OK",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                      width: 120,
-                    )
-                  ],
-                ).show();
-              });
-
-
-
-            } catch (e) {
-              try {
-                final result = await InternetAddress.lookup('google.com');
-                if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                  Alert(
-                    context: context,
-                    type: AlertType.error,
-                    title: "There was a problem",
-                    desc: "There was a problem updating your personal planner",
-                    buttons: [
-                      DialogButton(
-                        child: Text(
-                          "OK",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                        width: 120,
-                      )
-                    ],
-                  ).show();
-                }
-              } on SocketException catch (_) {
-                Alert(
-                  context: context,
-                  type: AlertType.error,
-                  title: "No Internet Connection",
-                  desc: "You are not connected to the internet.",
-                  buttons: [
-                    DialogButton(
-                      child: Text(
-                        "OK",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                      width: 120,
-                    )
-                  ],
-                ).show();
-              }
-            }
-          }
-        });
 
     return Scaffold(
       drawer: Drawer(
@@ -487,93 +374,234 @@ class _PersonalPlannerPageState extends State<PersonalPlannerPage> {
         backgroundColor: Colors.blue[800],
       ),
       body: Container(
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("images/backpic.jpg"),
             fit: BoxFit.fill,
           ),
         ),
-        child: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(35.0, 0, 35, 0),
-              child:
-              Container(
-                height: 400,
-                color: Colors.white,
+        child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(0, MediaQuery.of(context).size.height/10, 0, 0),
+          child: SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(35.0, 0, 35, 0),
+                child:
+                Container(
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(25))),
+                  height: 6.5*MediaQuery.of(context).size.height/10,
 
-                child: StreamBuilder(
-                  stream: Firestore.instance
-                      .collection("PersonalPlanner")
-                      .where("email", isEqualTo: widget.user.email).orderBy('dateTime')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if(!snapshot.hasData || snapshot.data.documents.length == 0) {
-                      print(snapshot.data.documents);
-                      return CalendarScreen(events: {}, withAdder: false, user: widget.user);
+                  child: StreamBuilder(
+                    stream: Firestore.instance
+                        .collection("PersonalPlanner")
+                        .where("email", isEqualTo: widget.user.email).orderBy('dateTime')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if(!snapshot.hasData || snapshot.data.documents.length == 0) {
 
-                    }
-                    else{
-                      print(snapshot.data.documents.length);
-                      Map<DateTime, List<Map>> events = new Map<DateTime, List<Map>>();
-                      for(int i = 0; i < snapshot.data.documents.length; i++){
-                        var event_dateTime = new DateTime.fromMillisecondsSinceEpoch(snapshot.data.documents[i]['dateTime'].seconds*1000);
-                        var event_time = formatTime(event_dateTime.hour, event_dateTime.minute);
-                        event_dateTime = DateTime(event_dateTime.year, event_dateTime.month, event_dateTime.day);
-                        if(events.containsKey(event_dateTime)){
-                          events[event_dateTime].add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
-                        }
-                        else{
-                          List<Map> tempList = new List<Map>();
-                          tempList.add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
-                          events[event_dateTime] = tempList;
-
-                        }
+                        return CalendarScreen(events: {}, withAdder: false, user: widget.user);
 
                       }
+                      else{
+                        print(snapshot.data.documents.length);
+                        Map<DateTime, List<Map>> events = new Map<DateTime, List<Map>>();
+                        for(int i = 0; i < snapshot.data.documents.length; i++){
+                          var event_dateTime = new DateTime.fromMillisecondsSinceEpoch(snapshot.data.documents[i]['dateTime'].seconds*1000);
+                          var event_time = formatTime(event_dateTime.hour, event_dateTime.minute);
+                          event_dateTime = DateTime(event_dateTime.year, event_dateTime.month, event_dateTime.day);
+                          if(events.containsKey(event_dateTime)){
+                            events[event_dateTime].add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
+                          }
+                          else{
+                            List<Map> tempList = new List<Map>();
+                            tempList.add({'name':'$event_time - ${snapshot.data.documents[i]['task']}', 'isDone': false});
+                            events[event_dateTime] = tempList;
+
+                          }
+
+                        }
 
 
-                      return CalendarScreen(events: events, withAdder: false, user: widget.user,);
+                        return CalendarScreen(events: events, withAdder: false, user: widget.user,);
+                      }
                     }
-                  }
+                  ),
                 ),
+
+
               ),
-
-
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(child: Icon(Icons.add), onPressed: (){Alert(context: context, title: "Add Task", content: Form(
-        key: _formKeyPersonalPlanner,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-
-
-
-
-            SizedBox(height: 25.0),
-            taskField,
-            SizedBox(height: 25.0),
-            dateTimeField,
-            SizedBox(
-              height: 35.0,
-            ),
-            addEventButton,
-            SizedBox(
-              height: 15.0,
-            ),
-
-          ],
-        ),
-      ), ).show();}),
+      floatingActionButton: FloatingActionButton(child: Icon(Icons.add), onPressed: (){Alert(context: context, title: "Add Task", content:  AlertDTContent(userEmail: widget.user.email)).show();}),
     );
 
   }
 
 
+}
+
+class AlertDTContent extends StatefulWidget {
+  @override
+  final String userEmail;
+
+  const AlertDTContent({@required this.userEmail});
+
+  _AlertDTContentState createState() => _AlertDTContentState();
+}
+
+class _AlertDTContentState extends State<AlertDTContent> {
+  @override
+  var task;
+  var date;
+  var time;
+  DateTime _dateTime;
+  var currentUser;
+  var userEmail = '';
+  Map _events;
+
+  void initState() {
+    date = DateTime.now();
+    time = TimeOfDay.now();
+  }
+
+  Widget build(BuildContext context) {
+    final taskField = TextField(
+      obscureText: false,
+      onChanged: (value){
+        task = value;
+      },
+      decoration: InputDecoration(
+        fillColor: Colors.white,
+        filled: true,
+        labelText: 'Class Name',
+      ),
+    );
+
+
+    final dateTimeField = DateTimePicker(selectedDate: date,
+      selectedTime: time,
+      selectDate: (val){
+
+        setState((){
+          date = val;
+          time = time;
+          print(time);
+        });
+
+      }, selectTime: (val){
+
+        setState((){
+          time = val;
+          date = date;
+        });
+
+      },);
+
+
+
+    var addEventButon = DialogButton(
+        color: Colors.blue[800],
+        child: Text(
+          "ADD TASK",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        onPressed: () async {
+
+          _dateTime = new DateTime(date.year, date.month, date.day, time.hour, time.minute);
+
+          print("$task");
+          try {
+            Firestore.instance.collection('PersonalPlanner').add({'task':task, 'email':widget.userEmail, 'dateTime': _dateTime}).then((val){
+              Alert(
+                context: context,
+                type: AlertType.success,
+                title: "Task added",
+                desc: "You have updating the personal planner.",
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "OK",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    width: 120,
+                  )
+                ],
+              ).show();
+            });
+
+
+
+          } catch (e) {
+            try {
+              final result = await InternetAddress.lookup('google.com');
+              if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                Alert(
+                  context: context,
+                  type: AlertType.error,
+                  title: "There was a problem",
+                  desc: "There was a problem adding your task to the universal planner. Please try again later.",
+                  buttons: [
+                    DialogButton(
+                      child: Text(
+                        "OK",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      width: 120,
+                    )
+                  ],
+                ).show();
+              }
+            } on SocketException catch (_) {
+              Alert(
+                context: context,
+                type: AlertType.error,
+                title: "No Internet Connection",
+                desc: "You are not connected to the internet.",
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "OK",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    width: 120,
+                  )
+                ],
+              ).show();
+            }
+          }
+
+        });
+    Widget form =
+    Form(
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(height: 25.0),
+          taskField,
+          SizedBox(height: 25.0),
+          dateTimeField,
+          SizedBox(
+            height: 50.0,
+          ),
+          addEventButon,
+          SizedBox(
+            height: 50.0,
+          )
+
+        ],
+      ),
+    );
+
+    return form;
+  }
 }
 
 String formatTime(hour, minute){

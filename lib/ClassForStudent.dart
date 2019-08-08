@@ -342,6 +342,7 @@ class _ClassTeacherQuestionsPageState extends State<ClassTeacherQuestionsPage> {
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("images/backpic.jpg"),
@@ -386,52 +387,70 @@ class _ClassTeacherQuestionsPageState extends State<ClassTeacherQuestionsPage> {
                     if (snapshot.data.documents[i]["type"] == "radio") {
                       answer = Column(
                         children: <Widget>[
-                          Row(children: <Widget>[
-                            Radio(
-                                value:0,
-                                groupValue: groupValues[i],
-                                onChanged: (dynamic) {
-                                  setState((){
-                                    questionAnswers[i] = snapshot.data.documents[i]["answers"]["a"];
-                                    groupValues[i] = dynamic;
-                                  });
+                          Row(
+                            children: <Widget>[
+                              Radio(
+                                  value:0,
+                                  groupValue: groupValues[i],
+                                  onChanged: (dynamic) {
+                                    setState((){
+                                      questionAnswers[i] = snapshot.data.documents[i]["answers"]["a"];
+                                      groupValues[i] = dynamic;
+                                    });
 
-                                }),
-                            Text(snapshot.data.documents[i]["answers"]["a"]),
-                            Radio(
-                                value: 1,
-                                groupValue: groupValues[i],
-                                onChanged: (dynamic) {
-                                  setState((){
-                                    questionAnswers[i] = snapshot.data.documents[i]["answers"]["b"];
-                                    groupValues[i] = dynamic;
-                                  });
+                                  }),
+                              Text(snapshot.data.documents[i]["answers"]["a"]),
+                            ],
+                          ),
 
-                                }),
-                            Text(snapshot.data.documents[i]["answers"]["b"]),
-                            Radio(
-                                value: 2,
-                                groupValue: groupValues[i],
-                                onChanged: (dynamic) {
-                                  setState((){
-                                    questionAnswers[i] = snapshot.data.documents[i]["answers"]["c"];
-                                    groupValues[i] = dynamic;
-                                  });
+                          Row(
+                            children: <Widget>[
+                              Radio(
+                                  value: 1,
+                                  groupValue: groupValues[i],
+                                  onChanged: (dynamic) {
+                                    setState((){
+                                      questionAnswers[i] = snapshot.data.documents[i]["answers"]["b"];
+                                      groupValues[i] = dynamic;
+                                    });
 
-                                }),
-                            Text(snapshot.data.documents[i]["answers"]["c"]),
-                            Radio(
-                                value: 3,
-                                groupValue: groupValues[i],
-                                onChanged: (dynamic) {
-                                  setState((){
-                                    questionAnswers[i] = snapshot.data.documents[i]["answers"]["d"];
-                                    groupValues[i] = dynamic;
-                                  });
+                                  }),
+                              Text(snapshot.data.documents[i]["answers"]["b"]),
+                            ],
+                          ),
 
-                                }),
-                            Text(snapshot.data.documents[i]["answers"]["d"]),
-                          ]),
+                          Row(
+                            children: <Widget>[
+                              Radio(
+                                  value: 2,
+                                  groupValue: groupValues[i],
+                                  onChanged: (dynamic) {
+                                    setState((){
+                                      questionAnswers[i] = snapshot.data.documents[i]["answers"]["c"];
+                                      groupValues[i] = dynamic;
+                                    });
+
+                                  }),
+                              Text(snapshot.data.documents[i]["answers"]["c"]),
+                            ],
+                          ),
+
+                          Row(
+                            children: <Widget>[
+                              Radio(
+                                  value: 3,
+                                  groupValue: groupValues[i],
+                                  onChanged: (dynamic) {
+                                    setState((){
+                                      questionAnswers[i] = snapshot.data.documents[i]["answers"]["d"];
+                                      groupValues[i] = dynamic;
+                                    });
+
+                                  }),
+                              Text(snapshot.data.documents[i]["answers"]["d"]),
+                            ],
+                          ),
+
                         DialogButton(child: Text("Submit"), onPressed: () {
                           print(questionAnswers[i]);
                           if(questionAnswers[i] != null){
